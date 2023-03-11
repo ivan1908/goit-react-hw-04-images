@@ -35,7 +35,6 @@ export const App = () => {
 
 
   useEffect(() => {
-    
      if (page === 0) return;
 
     const fetchImagesByQuery = async searchQuery => {
@@ -56,19 +55,23 @@ export const App = () => {
         setIsLoading(false);
       }
     };
-    
     fetchImagesByQuery(query);
-    setImages([]);
-  }, [page, query]);
-  
+    }, [page, query]);
 
   const handleSubmit = event => {
     event.preventDefault();
     if (input === '') {
-      <h3>Please enter your query</h3>;
+      Report.warning(
+              'Warning',
+              'Please enter your query',
+              'Okay',
+            )           
+      return;
     }
-    setImages([]);
-    setPage(1);
+    if (input !== query) {
+      setImages([]);
+      setPage(1);
+    }
     setQuery(input);
   };
 
@@ -102,12 +105,9 @@ export const App = () => {
         <Section>
           {isLoading && <Loader />}
           {noResults && (
-            Report.warning(
-              'Warning',
-              'No images found. Please try another query.',
-              'Okay',
+            <h3>No images found. Please try another query.</h3>
             )         
-          )}
+          }
         <ImageGallery images={images} onImageClick={onImageClick} />
           {error && (
              Report.warning(
