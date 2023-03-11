@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { fetchImages } from 'Api/Api';
 import { Report } from 'notiflix/build/notiflix-report-aio';
 
@@ -23,11 +23,19 @@ export const App = () => {
   });
   const [noResults, setNoResults] = useState(false);
 
- const handleChange = event => {
+  const inputRef = useRef(input);
+  
+  const handleChange = event => {
+    if (event.target.value === inputRef.current) {
+      return;
+    }
     setInput(event.target.value);
+    inputRef.current = event.target.value;
   };
 
+
   useEffect(() => {
+    
      if (page === 0) return;
 
     const fetchImagesByQuery = async searchQuery => {
@@ -48,18 +56,16 @@ export const App = () => {
         setIsLoading(false);
       }
     };
+    
     fetchImagesByQuery(query);
-    }, [page, query]);
+    setImages([]);
+  }, [page, query]);
+  
 
   const handleSubmit = event => {
     event.preventDefault();
     if (input === '') {
-      Report.warning(
-              'Warning',
-              'Please enter your query',
-              'Okay',
-            )         
-      return;
+      <h3>Please enter your query</h3>;
     }
     setImages([]);
     setPage(1);
